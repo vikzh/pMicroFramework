@@ -1,9 +1,17 @@
 <?php
-function server($url)
-{
-    if (preg_match('/^\/home\/?$/i', $url)) {
-        return "<h1>Home page</h1>";
-    }
-}
 
-echo server($_SERVER['REQUEST_URI']);
+require_once 'vendor/autoload.php';
+
+use App\Application;
+
+$app = new Application;
+
+$app->get('/home', function (){
+    return 'Home page';
+});
+
+$app->post('/', function (){
+    return 'Main page';
+});
+
+$app->run();
