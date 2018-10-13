@@ -8,6 +8,10 @@
         "phpunit/phpunit": "^7.3"
     },
     "autoload": {
-        "psr-4": {"": "src/"}
+        "psr-4": {"": "src/"},
+        "files": [
+            "src/App/Renderer.php",
+            "src/App/Template.php"
+        ]
     }
 }
