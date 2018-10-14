@@ -16,24 +16,33 @@ class Application implements ApplicationInterface
         $this->append('POST', $url, $func);
     }
 
-    public function run()
+    private function append($method, $route, $handler)
     {
-        $uri = $_SERVER['REQUEST_URI'];
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        foreach ($this->handlers as $handler) {
-            [$httpMethod, $route, $handlerMethod] = $handler;
-
-            $preparedRoute = preg_quote($route, '/');
-            if ($method == $httpMethod && preg_match("/^$preparedRoute$/i", $uri)) {
-                echo $handlerMethod();
-                return;
-            }
+        $updatedRoute = $route;
+        if (preg_match_all('/:([^\/]+)/', $route, $matches)) {
+            $updatedRoute = array_reduce($matches[1], function ($acc, $value) {
+                $group = "(?P<$value>[\w-]+)";
+                return str_replace(":{$value}", $group, $acc);
+            }, $route);
         }
+
+        $this->handlers[] = [$updatedRoute, $method, $handler];
     }
 
-    private function append($method, $url, $func)
+    public function run()
     {
-        $this->handlers[] = [$method, $url, $func];
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $method = $_SERVER['REQUEST_METHOD'];
+        foreach ($this->handlers as $item) {
+            list($route, $handlerMethod, $handler) = $item;
+            $preparedRoute = str_replace('/', '\/', $route);
+            $matches = [];
+            if ($method == $handlerMethod && preg_match("/^$preparedRoute$/i", $uri, $matches)) {
+                $arguments = array_filter($matches, function ($key) {
+                    return !is_numeric($key);
+                }, ARRAY_FILTER_USE_KEY);
+                echo $handler($_GET, $arguments);
+            }
+        }
     }
 }
