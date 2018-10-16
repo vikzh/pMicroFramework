@@ -10,8 +10,9 @@
     "autoload": {
         "psr-4": {"": "src/"},
         "files": [
-            "src/App/Renderer.php",
-            "src/App/Template.php"
+            "src/App/Response.php",
+            "src/App/Renderer/Renderer.php",
+            "src/App/Template/Template.php"
         ]
     }
 }

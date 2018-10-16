@@ -25,7 +25,6 @@ class Application implements ApplicationInterface
                 return str_replace(":{$value}", $group, $acc);
             }, $route);
         }
-
         $this->handlers[] = [$updatedRoute, $method, $handler];
     }
 
@@ -38,10 +37,22 @@ class Application implements ApplicationInterface
             $preparedRoute = str_replace('/', '\/', $route);
             $matches = [];
             if ($method == $handlerMethod && preg_match("/^$preparedRoute$/i", $uri, $matches)) {
-                $arguments = array_filter($matches, function ($key) {
+                $attributes = array_filter($matches, function ($key) {
                     return !is_numeric($key);
                 }, ARRAY_FILTER_USE_KEY);
-                echo $handler($_GET, $arguments);
+                $meta = [
+                    'method' => $method,
+                    'uri' => $uri,
+                    'headers' => getallheaders()
+                ];
+
+                $response = $handler($meta, array_merge($_GET, $_POST), $attributes);
+                http_response_code($response->getStatusCode());
+                foreach ($response->getHeaderLines() as $header) {
+                    header($header);
+                }
+                echo $response->getBody();
+                return;
             }
         }
     }
