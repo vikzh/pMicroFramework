@@ -6,7 +6,6 @@ use function App\Template\render as templateRender;
 
 function render($filepath, $params = [])
 {
-    $parts = [getcwd(), 'resources', 'views', $filepath];
-    $templatePath = implode($parts, DIRECTORY_SEPARATOR) . '.phtml';
-    return templateRender($templatePath, $params);
+    $templatepath = 'resources/views'. DIRECTORY_SEPARATOR . $filepath . '.phtml';
+    return \App\Template\Render($templatepath, $params);
 }

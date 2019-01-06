@@ -33,7 +33,8 @@ class Application implements ApplicationInterface
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
         foreach ($this->handlers as $item) {
-            list($route, $handlerMethod, $handler) = $item;
+            [$route, $handlerMethod, $handler] = $item;
+            print_r($handler);
             $preparedRoute = str_replace('/', '\/', $route);
             $matches = [];
             if ($method == $handlerMethod && preg_match("/^$preparedRoute$/i", $uri, $matches)) {
@@ -47,6 +48,7 @@ class Application implements ApplicationInterface
                 ];
 
                 $response = $handler($meta, array_merge($_GET, $_POST), $attributes);
+                echo var_dump($response);
                 http_response_code($response->getStatusCode());
                 foreach ($response->getHeaderLines() as $header) {
                     header($header);
