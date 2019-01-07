@@ -33,13 +33,14 @@ class Application implements ApplicationInterface
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
         foreach ($this->handlers as $item) {
-            [$route, $handlerMethod, $handler] = $item;
+            list($route, $handlerMethod, $handler) = $item;
             $preparedRoute = str_replace('/', '\/', $route);
             $matches = [];
             if ($method == $handlerMethod && preg_match("/^$preparedRoute$/i", $uri, $matches)) {
                 $attributes = array_filter($matches, function ($key) {
                     return !is_numeric($key);
                 }, ARRAY_FILTER_USE_KEY);
+
                 $meta = [
                     'method' => $method,
                     'uri' => $uri,
@@ -47,13 +48,11 @@ class Application implements ApplicationInterface
                 ];
 
                 $response = $handler($meta, array_merge($_GET, $_POST), $attributes);
-
                 http_response_code($response->getStatusCode());
                 foreach ($response->getHeaderLines() as $header) {
                     header($header);
                 }
                 echo $response->getBody();
-
                 return;
             }
         }

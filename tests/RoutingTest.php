@@ -6,25 +6,25 @@ use PHPUnit\Framework\TestCase;
 
 class RoutingTest extends TestCase
 {
-    private $http;
+    private $client;
 
     public function setUp()
     {
-        $this->http = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8080']);
+        $this->client = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:8080/']);
     }
 
     public function testGetMethodRoute()
     {
-        $response = $this->http->request('GET', '/home');
+        $response = $this->client->request('GET', 'home');
 
-        $this->assertEquals('home page', $response->getgetBody());
+        $this->assertContains('Home page', (string) $response->getBody());
     }
 
     public function testPostMethodRoute()
     {
-        $response = $this->http->request('POST', '/home');
+        $response = $this->client->request('POST', 'home');
 
-        $this->assertEquals('post home page', $response->getBody());
+        $this->assertContains('Post Home page', (string) $response->getBody());
     }
 
     public function tearDown() {

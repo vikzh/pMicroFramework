@@ -5,16 +5,20 @@ require __DIR__.'/../vendor/autoload.php';
 
 use App\Application;
 use function App\Renderer\render;
-use function App\Response;
+use function App\response;
 
 $app = new Application;
 
 $app->get('/home', function () {
-    return render('home', ['title' => 'Home page']);
+    return response(render('home', ['title' => 'Home page']));
+});
+
+$app->post('/home', function () {
+    return response(render('home', ['title' => 'Post Home page']));
 });
 
 $app->post('/', function () {
-    return render('index');
+    return response(render('index'));
 });
 
 $data = [
