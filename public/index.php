@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-require_once 'vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 use App\Application;
 use function App\Renderer\render;

@@ -1,2 +1,2 @@
 run:
-		php -S localhost:3000 index.php
+		php -S localhost:8080 public/index.php
