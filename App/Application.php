@@ -6,14 +6,14 @@ class Application implements ApplicationInterface
 {
     private $handlers = [];
 
-    public function get($url, $func)
+    public function get($route, $handler)
     {
-        $this->append('GET', $url, $func);
+        $this->append('GET', $route, $handler);
     }
 
-    public function post($url, $func)
+    public function post($route, $handler)
     {
-        $this->append('POST', $url, $func);
+        $this->append('POST', $route, $handler);
     }
 
     private function append($method, $route, $handler)
@@ -47,11 +47,13 @@ class Application implements ApplicationInterface
                 ];
 
                 $response = $handler($meta, array_merge($_GET, $_POST), $attributes);
+
                 http_response_code($response->getStatusCode());
                 foreach ($response->getHeaderLines() as $header) {
                     header($header);
                 }
                 echo $response->getBody();
+
                 return;
             }
         }
