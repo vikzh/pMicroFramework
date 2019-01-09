@@ -17,17 +17,26 @@ class RoutingTest extends TestCase
     {
         $response = $this->client->request('GET', 'home');
 
-        $this->assertContains('Home page', (string) $response->getBody());
+        $this->assertContains('Home page', (string)$response->getBody());
     }
 
     public function testPostMethodRoute()
     {
         $response = $this->client->request('POST', 'home');
 
-        $this->assertContains('Post Home page', (string) $response->getBody());
+        $this->assertContains('Post Home page', (string)$response->getBody());
     }
 
-    public function tearDown() {
+    public function testDynamicArticlesRoute()
+    {
+        $id = rand(1, 100);
+        $response = $this->client->request('GET', "articles/{$id}");
+
+        $this->assertContains((string)$id, (string)$response->getBody());
+    }
+
+    public function tearDown()
+    {
         $this->http = null;
     }
 }

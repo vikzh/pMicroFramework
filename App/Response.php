@@ -18,7 +18,11 @@ class Response implements ResponseInterface
         if (is_string($body)) {
             $this->headers['Content-Length'] = mb_strlen($body);
         }
-        $this->body = $body;
+        if (is_array($body)) {
+            $this->body = implode(" ", $body);
+        } else {
+            $this->body = $body;
+        }
     }
 
     public function redirect($url)
