@@ -8,6 +8,14 @@ use App\Application;
 use function App\Renderer\render;
 use function App\response;
 
+$opt = array(
+    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+    \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+);
+
+$pdo = new \PDO('sqlite:/var/tmp/db.sqlite', null, null, $opt);
+$repository = new ArticleRepository($pdo);
+
 $app = new Application();
 
 //HTTP Method Get handler
@@ -25,9 +33,41 @@ $app->get('/articles/:id', function ($params, $data, $arguments) {
     return response($arguments);
 });
 
-$app->post('/', function () {
-    return response(render('index'));
+
+$app->get('/articles', function () use ($repository) {
+    $articles = $repository->all();
+    return response(render('articles/index', ['articles' => $articles]));
 });
+
+$app->get('/articles/new', function ($meta, $params, $attributes) {
+    return response(render('articles/new', ['errors' => []]));
+});
+
+$app->delete('/articles/:id', function ($meta, $params, $attributes) use ($repository) {
+    $repository->delete($attributes['id']);
+    return response()->redirect('/articles');
+});
+
+$app->post('/articles', function ($meta, $params, $attributes) use ($repository) {
+    $article = $params['article'];
+    $errors = [];
+
+    if (!$article['title']) {
+        $errors['title'] = "Title can't be blank";
+    }
+
+    if (empty($errors)) {
+        $repository->insert($article);
+        return response()->redirect('/articles');
+    } else {
+        return response(render('articles/new', ['article' => $article, 'errors' => $errors]))
+            ->withStatus(422);
+    }
+});
+
+//$app->post('/', function () {
+//    return response(render('index'));
+//});
 
 $data = [
     []

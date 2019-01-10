@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>New Article</h1>
+
+<div>
+    <a href="/">Articles list</a>
+</div>
+
+<br>
+
+<form action="/articles" method="post">
+    <div>
+        <b>Title</b>
+        <input type="text" name="article[title]">
+        <?php if (isset($errors['model'])) : ?>
+            <div style="color: red"><?= $errors['title'] ?></div>
+        <?php endif ?>
+    </div>
+
+    <br>
+
+    <div>
+        Text
+        <textarea name="article[text]"></textarea>
+    </div>
+    <br>
+    <div>
+        <input type="submit">
+    </div>
+</form>
+
+</body>
+</html>

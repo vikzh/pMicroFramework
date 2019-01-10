@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Articles</h1>
+<div>
+    <a class="new-article" href="/articles/new">add new</a>
+</div>
+
+<br>
+
+<table border="1" style="border-collapse: collapse;">
+    <tr>
+        <td>id</td>
+        <td>Title</td>
+        <td>Text</td>
+        <td>Actions</td>
+    </tr>
+
+    <?php foreach ($articles as $article) : ?>
+        <tr class="tr">
+            <td><?= $article['id'] ?></td>
+            <td><?= $article['title'] ?></td>
+            <td><?= $article['text'] ?></td>
+            <td>
+                <form class="form" action="/articles/<?= $article['id'] ?>" method='POST'>
+                    <input type="hidden" name='_method' value="delete">
+                    <input type="submit" name="" value="remove">
+                </form>
+            </td>
+        </tr>
+    <?php endforeach ?>
+</table>
+</body>
+</html>

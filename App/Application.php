@@ -16,6 +16,11 @@ class Application implements ApplicationInterface
         $this->append('POST', $route, $handler);
     }
 
+    public function delete($route, $handler)
+    {
+        $this->append('DELETE', $route, $handler);
+    }
+
     private function append($method, $route, $handler)
     {
         $updatedRoute = $route;
@@ -31,9 +36,13 @@ class Application implements ApplicationInterface
     public function run()
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $method = $_SERVER['REQUEST_METHOD'];
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && array_key_exists('_method', $_POST)) {
+            $method = strtoupper($_POST['_method']);
+        } else {
+            $method = $_SERVER['REQUEST_METHOD'];
+        }
         foreach ($this->handlers as $item) {
-            list($route, $handlerMethod, $handler) = $item;
+            [$route, $handlerMethod, $handler] = $item;
             $preparedRoute = str_replace('/', '\/', $route);
             $matches = [];
             if ($method == $handlerMethod && preg_match("/^$preparedRoute$/i", $uri, $matches)) {
