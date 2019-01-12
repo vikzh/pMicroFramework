@@ -11,6 +11,7 @@ class Response implements ResponseInterface
 {
     protected $headers = [];
     protected $status = 200;
+    protected $cookies = [];
     protected $body;
 
     public function __construct($body)
@@ -39,6 +40,12 @@ class Response implements ResponseInterface
         return $this;
     }
 
+    public function withCookie($key, $value)
+    {
+        $this->cookies[$key] = $value;
+        return $this;
+    }
+
     public function format($format)
     {
         switch ($format) {
@@ -54,6 +61,11 @@ class Response implements ResponseInterface
     public function getStatusCode()
     {
         return $this->status;
+    }
+
+    public function getCookies()
+    {
+        return $this->cookies;
     }
 
     public function getBody()

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Goods list</title>
+</head>
+<body>
+<div><a href="products/cart">Cart</a></div>
+<br>
+<?php foreach ($goods as $good) : ?>
+    <table>
+        <tr>
+            <td><?= $good ?></td>
+            <td>
+                <form id="<?= $good ?>-add" method="post" action="/cart">
+                    <input type="hidden" name="good" value="<?= $good ?>">
+                    <input type="submit" value="add">
+                </form>
+            </td>
+        </tr>
+    </table>
+<?php endforeach ?>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+<div><a href="products">Home</a></div>
+<br>
+<?php if (empty($goods)) : ?>
+    <p>cart is empty</p>
+<?php else : ?>
+    <?php foreach ($goods as $good => $count) : ?>
+        <table>
+            <tr>
+                <td><?= $good ?> : <span id="<?= $good ?>-count"><?= $count ?></span></td>
+                <td>
+                    <form id="<?= $good ?>-remove" method="post" action="/cart">
+                        <input type="hidden" name="_method" value="delete">
+                        <input type="hidden" name="good" value="<?= $good ?>">
+                        <input type="submit" value="remove">
+                    </form>
+                </td>
+            </tr>
+        </table>
+    <?php endforeach ?>
+<?php endif ?>
+</body>
+</html>
+

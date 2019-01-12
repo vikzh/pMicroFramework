@@ -8,6 +8,7 @@ interface ResponseInterface
     public function redirect($url);
 
     public function withStatus($status);
+    public function withCookie($key, $value);
     public function format($format);
     public function getStatusCode();
     public function getBody();

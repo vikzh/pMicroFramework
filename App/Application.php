@@ -46,7 +46,7 @@ class Application implements ApplicationInterface
             $preparedRoute = str_replace('/', '\/', $route);
             $matches = [];
             if ($method == $handlerMethod && preg_match("/^$preparedRoute$/i", $uri, $matches)) {
-                $arguments = array_filter($matches, function ($key) {
+                $attributes = array_filter($matches, function ($key) {
                     return !is_numeric($key);
                 }, ARRAY_FILTER_USE_KEY);
 
@@ -56,11 +56,17 @@ class Application implements ApplicationInterface
                     'headers' => getallheaders()
                 ];
 
-                $response = $handler($meta, array_merge($_GET, $_POST), $arguments);
+                $response = $handler($meta, array_merge($_GET, $_POST), $attributes, $_COOKIE);
                 http_response_code($response->getStatusCode());
+
                 foreach ($response->getHeaderLines() as $header) {
                     header($header);
                 }
+
+                foreach ($response->getCookies() as $key => $value) {
+                    setcookie($key, $value);
+                }
+
                 echo $response->getBody();
                 return;
             }
