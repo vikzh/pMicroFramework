@@ -65,6 +65,8 @@ $app->post('/articles', function ($meta, $params, $attributes) use ($repository)
     }
 });
 
+
+//Cookies
 $goods = ['sweets', 'bread', 'water', 'meat', 'cheese'];
 
 $app->get('/products', function ($meta, $params, $attributes, $cookies) use ($goods) {
@@ -92,6 +94,29 @@ $app->delete('/cart', function ($meta, $params, $attributes, $cookies) use ($goo
     $good = $params['good'];
     unset($cart[$good]);
     return response()->redirect('/cart')->withCookie('cart', json_encode($cart));
+});
+
+//Session
+$app->get('/user', function ($meta, $params, $attributes, $cookies, $session) {
+    $session->start();
+    $nickname = $session->get('nickname');
+    return response(render('users/index', ['nickname' => $nickname]));
+});
+
+$app->get('/session/new', function ($meta, $params, $attributes, $cookies, $session) {
+    return response(render('users/new'));
+});
+
+$app->post('/session', function ($meta, $params, $attributes, $cookies, $session) {
+    $session->start();
+    $session->set('nickname', $params['nickname']);
+    return response()->redirect('/user');
+});
+
+$app->delete('/session', function ($meta, $params, $attribute, $cookies, $session) {
+    $session->start();
+    $session->destroy();
+    return response()->redirect('/user');
 });
 
 //$app->post('/', function () {

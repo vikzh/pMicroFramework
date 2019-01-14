@@ -56,7 +56,8 @@ class Application implements ApplicationInterface
                     'headers' => getallheaders()
                 ];
 
-                $response = $handler($meta, array_merge($_GET, $_POST), $attributes, $_COOKIE);
+                $session = new Session();
+                $response = $handler($meta, array_merge($_GET, $_POST), $attributes, $_COOKIE, $session);
                 http_response_code($response->getStatusCode());
 
                 foreach ($response->getHeaderLines() as $header) {
